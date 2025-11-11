@@ -29,6 +29,16 @@
 </head>
 <body>
 
+  <script>
+  const keyword = prompt("🔑 このサイトのアクセスキーワードを入力してください：");
+  if (keyword !== "paint2025") {
+    alert("キーワードが違います。アクセスできません。");
+    document.body.innerHTML = "<h2 style='text-align:center;color:red;margin-top:20%;'>アクセス拒否</h2>";
+    throw new Error("アクセス拒否");
+  }
+</script>
+
+
 <h1>⚖️ はかり比率計算ツール</h1>
 
 <div class="overlay">
@@ -78,7 +88,9 @@ function calcReverse() {
   document.getElementById("hardAmt").value = hard.toFixed(2);
   document.getElementById("total").value = total.toFixed(2);
 }
+
 </script>
 
 </body>
 </html>
+
