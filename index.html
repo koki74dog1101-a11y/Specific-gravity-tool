@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⚖️ はかり比率計算ツール</title>
+<style>
+  body {
+    font-family: "Segoe UI", sans-serif;
+    background: url('scale.png') no-repeat center center/contain;
+    background-color: #f9f9f9;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+  }
+  .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+  h1 { position: absolute; top: 10px; width: 100%; text-align: center; color: #333; }
+  .left, .right { position: absolute; width: 120px; text-align: center; }
+  .left { left: 20%; top: 55%; transform: translate(-50%, -50%); }
+  .right { right: 20%; top: 55%; transform: translate(50%, -50%); }
+  input { width: 100%; padding: 6px; font-size: 1rem; text-align: center; border: 1px solid #888; border-radius: 8px; }
+  label { font-size: 0.9rem; font-weight: bold; color: #222; }
+  .bottom { position: absolute; bottom: 10%; width: 100%; text-align: center; }
+  button { margin: 5px; padding: 8px 16px; font-size: 1rem; border: none; border-radius: 8px; cursor: pointer; }
+  .calc { background-color: #b4f2b4; }
+  .reverse { background-color: #add8ff; }
+  input[readonly] { background-color: #eee; }
+</style>
+</head>
+<body>
+
+<h1>⚖️ はかり比率計算ツール</h1>
+
+<div class="overlay">
+  <div class="left">
+    <label>主液(kg)</label><br>
+    <input id="mainAmt" type="number" value="1.8" step="0.01"><br>
+  </div>
+  <div class="right">
+    <label>硬化剤(kg)</label><br>
+    <input id="hardAmt" type="number" readonly><br>
+  </div>
+  <div class="bottom">
+    比率 主液:<input id="mainRatio" type="number" value="7" step="0.1" style="width:60px;"> 
+    硬化剤:<input id="hardRatio" type="number" value="1" step="0.1" style="width:60px;"><br><br>
+    塗布量(kg/m²)：<input id="coatRate" type="number" value="0.15" step="0.01" style="width:80px;">
+    面積(m²)：<input id="area" type="number" step="0.01" style="width:80px;"><br><br>
+    合計(kg)：<input id="total" type="number" readonly style="width:80px;"><br><br>
+    <button class="calc" onclick="calcForward()">→ 面積を計算</button>
+    <button class="reverse" onclick="calcReverse()">← 面積から逆算</button>
+  </div>
+</div>
+
+<script>
+function calcForward() {
+  const r1 = parseFloat(document.getElementById("mainRatio").value);
+  const r2 = parseFloat(document.getElementById("hardRatio").value);
+  const main = parseFloat(document.getElementById("mainAmt").value);
+  const coat = parseFloat(document.getElementById("coatRate").value);
+  if (isNaN(r1) || isNaN(r2) || isNaN(main) || isNaN(coat)) return;
+  const hard = main * r2 / r1;
+  const total = main + hard;
+  const area = total / coat;
+  document.getElementById("hardAmt").value = hard.toFixed(2);
+  document.getElementById("total").value = total.toFixed(2);
+  document.getElementById("area").value = area.toFixed(2);
+}
+function calcReverse() {
+  const r1 = parseFloat(document.getElementById("mainRatio").value);
+  const r2 = parseFloat(document.getElementById("hardRatio").value);
+  const area = parseFloat(document.getElementById("area").value);
+  const coat = parseFloat(document.getElementById("coatRate").value);
+  if (isNaN(r1) || isNaN(r2) || isNaN(area) || isNaN(coat)) return;
+  const total = area * coat;
+  const main = total * (r1 / (r1 + r2));
+  const hard = total - main;
+  document.getElementById("mainAmt").value = main.toFixed(2);
+  document.getElementById("hardAmt").value = hard.toFixed(2);
+  document.getElementById("total").value = total.toFixed(2);
+}
+</script>
+
+</body>
+</html>
